@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { CommentType } from '@types';
 import * as mongoose from 'mongoose';
 
 @Injectable()
@@ -33,7 +32,7 @@ export class TrackService {
   }
 
   async addComment(dto: CreateCommentDto) {
-    const comment: CommentType = { ...dto, _id: new mongoose.Types.ObjectId() };
+    const comment = { ...dto, _id: new mongoose.Types.ObjectId() };
     const track = await this.trackModel.findById(comment.trackId);
     track.comments.push(comment);
     await track.save();

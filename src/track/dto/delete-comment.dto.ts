@@ -1,3 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
+import * as mongoose from 'mongoose';
 export class DeleteCommentDto {
-  readonly trackId: string;
+  @ApiProperty({
+    type: String,
+  })
+  readonly trackId: mongoose.Types.ObjectId;
 }
