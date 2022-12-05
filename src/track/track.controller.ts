@@ -12,6 +12,7 @@ import {
   Param,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import {
@@ -22,9 +23,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Comment } from './comment/comment.schema';
+import { AllExceptionsFilter } from 'exception-filter/exception.filter';
 
 @ApiTags('Track')
 @Controller('/tracks')
+@UseFilters(AllExceptionsFilter)
 export class TrackController {
   constructor(private trackService: TrackService) {}
 
