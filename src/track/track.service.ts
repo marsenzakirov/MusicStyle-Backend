@@ -1,3 +1,4 @@
+import { FileService, FileType } from './../file/file.service';
 import { ChangeCommentDto } from './dto/change-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { NotFoundException, BadRequestException } from 'api/exceptions';
@@ -15,13 +16,22 @@ import * as mongoose from 'mongoose';
 export class TrackService {
   constructor(
     @InjectModel(Track.name) private trackModel: Model<TrackDocument>,
+    private fileService: FileService,
   ) {}
-  async create(dto: CreateTrackDto) {
+
+  async create(dto: CreateTrackDto, picture, audio) {
+    checkIsExist(picture);
+    checkIsExist(audio);
     checkDto(dto);
-    const track = await this.trackModel.create({ ...dto, listens: 0 });
-    if (!track) {
-      throw new BadRequestException();
-    }
+    const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
+    const audioPath = this.fileService.createFile(FileType.AUDIO, audio);
+    const track = await this.trackModel.create({
+      ...dto,
+      listens: 0,
+      picture: picturePath,
+      audio: audioPath,
+    });
+
     return new Created();
   }
 
@@ -37,7 +47,10 @@ export class TrackService {
 
   async delete(id) {
     const track = await this.trackModel.findByIdAndDelete(id);
-    console.log(track);
+
+    this.fileService.deleteFile(track.audio.src);
+    this.fileService.deleteFile(track.picture.src);
+
     if (!track) {
       throw new NotFoundException({ message: 'Track not found' });
     }

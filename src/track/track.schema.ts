@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Comment } from './comment/comment.schema';
+import { File } from 'file/file.schema';
 
 export type TrackDocument = HydratedDocument<Track>;
 
@@ -24,12 +25,16 @@ export class Track {
   description: string;
 
   @Prop()
-  @ApiProperty()
-  picture: string;
+  @ApiProperty({
+    type: File,
+  })
+  picture: File;
 
   @Prop()
-  @ApiProperty()
-  audio: string;
+  @ApiProperty({
+    type: File,
+  })
+  audio: File;
 
   @Prop()
   @ApiProperty({

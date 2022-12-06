@@ -15,6 +15,8 @@ export class Comment {
   text: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   trackId: mongoose.Types.ObjectId;
 }

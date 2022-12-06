@@ -9,10 +9,13 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Post,
   Put,
+  UploadedFiles,
   UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import {
@@ -24,6 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { Comment } from './comment/comment.schema';
 import { AllExceptionsFilter } from 'exception-filter/exception.filter';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Track')
 @Controller('/tracks')
@@ -33,8 +37,20 @@ export class TrackController {
 
   @Post()
   @ApiBody({ type: CreateTrackDto })
-  create(@Body() dto: CreateTrackDto) {
-    return this.trackService.create(dto);
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
+  @Header('content-type', 'Multipart/form-data')
+  create(
+    @UploadedFiles() files,
+    @Body()
+    dto: CreateTrackDto,
+  ) {
+    const { picture, audio } = files;
+    return this.trackService.create(dto, picture[0], audio[0]);
   }
 
   @Get()
