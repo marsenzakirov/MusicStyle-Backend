@@ -7,4 +7,8 @@ export class CreateTrackDto {
   readonly artist: string;
   @ApiProperty()
   readonly description: string;
+  @ApiProperty()
+  readonly audio: object;
+  @ApiProperty()
+  readonly picture: object;
 }
