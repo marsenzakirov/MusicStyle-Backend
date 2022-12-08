@@ -13,6 +13,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseFilters,
   UseInterceptors,
@@ -20,6 +21,7 @@ import {
 import { ObjectId } from 'mongoose';
 import {
   ApiBody,
+  ApiConsumes,
   ApiParam,
   ApiQuery,
   ApiResponse,
@@ -37,6 +39,7 @@ export class TrackController {
 
   @Post()
   @ApiBody({ type: CreateTrackDto })
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'picture', maxCount: 1 },
@@ -55,8 +58,8 @@ export class TrackController {
 
   @Get()
   @ApiResponse({ status: 200, description: 'Get all tracks', type: [Track] })
-  getAll() {
-    return this.trackService.getAll();
+  getAll(@Query('count') count: number, @Query('offset') offset: number) {
+    return this.trackService.getAll(count, offset);
   }
 
   @Get(':id')

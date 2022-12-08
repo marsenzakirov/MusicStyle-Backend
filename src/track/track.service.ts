@@ -31,13 +31,18 @@ export class TrackService {
       picture: picturePath,
       audio: audioPath,
     });
-
     return new Created();
   }
 
-  async getAll() {
-    const tracks = await this.trackModel.find();
-    return new Success({ message: 'Tracks', data: tracks });
+  async getAll(count = 10, offset = 0) {
+    const tracks = await this.trackModel
+      .find({}, { comments: 0 })
+      .skip(offset * count)
+      .limit(count);
+    const total = await this.trackModel.countDocuments();
+    const pages =
+      total % count === 0 ? total / count - 1 : Math.floor(total / count);
+    return new Success({ message: 'Tracks', data: { pages, tracks } });
   }
 
   async getOne(id) {
@@ -59,9 +64,12 @@ export class TrackService {
 
   async addComment(dto: CreateCommentDto) {
     checkDto(dto);
-
-    const comment = { ...dto, _id: new mongoose.Types.ObjectId() };
-    const track = await this.trackModel.findById(comment.trackId);
+    const comment = {
+      _id: new mongoose.Types.ObjectId(),
+      username: dto.username,
+      text: dto.text,
+    };
+    const track = await this.trackModel.findById(dto.trackId);
     track.comments.push(comment);
     await track.save();
     return new Created();
