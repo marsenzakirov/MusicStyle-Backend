@@ -10,4 +10,8 @@ export class File {
   @Prop()
   @ApiProperty()
   size: number;
+
+  @Prop()
+  @ApiProperty()
+  duration?: string;
 }

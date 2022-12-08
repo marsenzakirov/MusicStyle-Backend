@@ -24,7 +24,7 @@ export class TrackService {
     checkIsExist(audio);
     checkDto(dto);
     const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
-    const audioPath = this.fileService.createFile(FileType.AUDIO, audio);
+    const audioPath = await this.fileService.createFile(FileType.AUDIO, audio);
     const track = await this.trackModel.create({
       ...dto,
       listens: 0,
