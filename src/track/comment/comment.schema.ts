@@ -13,10 +13,4 @@ export class Comment {
   @Prop()
   @ApiProperty()
   text: string;
-
-  @Prop()
-  @ApiProperty({
-    type: String,
-  })
-  trackId: mongoose.Types.ObjectId;
 }
