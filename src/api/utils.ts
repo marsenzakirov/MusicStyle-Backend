@@ -1,6 +1,7 @@
 import { BadRequestException } from './exceptions';
 
 export const checkDto = (dto: any) => {
+  checkIsExist(dto);
   const keys = Object.keys(dto);
   for (const key of keys) {
     if (!dto[key]) {
