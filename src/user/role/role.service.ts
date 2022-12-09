@@ -15,7 +15,7 @@ export class RoleService {
   async createRole(dto) {
     checkDto(dto);
     const candidate = await this.getRoleByName(dto);
-    checkIsUnique(candidate, 'Role');
+    checkIsUnique(candidate.data, 'Role');
     const role = await this.roleModel.create({ ...dto });
     return new Created();
   }
