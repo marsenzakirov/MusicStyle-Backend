@@ -61,3 +61,17 @@ export class ForbiddenException extends HttpException {
     );
   }
 }
+
+export class MethodNotAllowed extends HttpException {
+  constructor(error: Error = null) {
+    super(
+      {
+        message: 'Method Not Allowed',
+        error: 'The method is not allowed',
+        createdAt: new Date(),
+        ...error,
+      },
+      HttpStatus.METHOD_NOT_ALLOWED,
+    );
+  }
+}
