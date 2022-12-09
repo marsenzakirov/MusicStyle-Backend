@@ -19,3 +19,11 @@ export const checkIsExist = (data: any) => {
     throw new BadRequestException({ message: 'Data is not exist' });
   }
 };
+
+export const checkIsUnique = (data: any, name = 'Data') => {
+  if (data) {
+    throw new BadRequestException({
+      message: `${name} is not unique`,
+    });
+  }
+};
