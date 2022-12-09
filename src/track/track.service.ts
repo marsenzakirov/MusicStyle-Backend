@@ -56,9 +56,8 @@ export class TrackService {
     this.fileService.deleteFile(track.audio.src);
     this.fileService.deleteFile(track.picture.src);
 
-    if (!track) {
-      throw new NotFoundException({ message: 'Track not found' });
-    }
+    checkIsExist(track);
+
     return new Success({ message: 'Track deleted' });
   }
 
