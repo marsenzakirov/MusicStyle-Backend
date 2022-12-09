@@ -12,7 +12,7 @@ export class UserService {
 
   async createUser(dto: CreateUserDto) {
     checkDto(dto);
-    const user = await this.userModel.create(dto);
+    const user = await this.userModel.create({ ...dto, role: 'user' });
     return new Created();
   }
 
