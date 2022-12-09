@@ -14,4 +14,8 @@ export const checkIsExist = (data: any) => {
   if (!data) {
     throw new BadRequestException({ message: 'Data is not exist' });
   }
+
+  if (Object.entries(data).length === 0) {
+    throw new BadRequestException({ message: 'Data is not exist' });
+  }
 };
