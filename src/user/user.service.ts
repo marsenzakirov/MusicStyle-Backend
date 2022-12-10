@@ -1,3 +1,4 @@
+import { RoleService } from './role/role.service';
 import { checkDto } from 'api/utils';
 import { Created, Success } from 'api/responses';
 import { Injectable } from '@nestjs/common';
@@ -8,12 +9,17 @@ import { User, UserDocument } from './user.schema';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private roleService: RoleService,
+  ) {}
 
   async createUser(dto: CreateUserDto) {
     checkDto(dto);
-    const user = await this.userModel.create({ ...dto, role: 'user' });
-    return new Created();
+    const role = await this.roleService.getRoleByName('user');
+    console.log(role);
+    const user = await this.userModel.create({ ...dto, role: role.data });
+    return user;
   }
 
   async getAllUsers(count = 10, offset = 0) {
@@ -30,7 +36,7 @@ export class UserService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.userModel.findOne({ email }, { role: 1 });
-    return user;
+    const user = await this.userModel.findOne({ email }).lean();
+    return new Success({ data: user });
   }
 }

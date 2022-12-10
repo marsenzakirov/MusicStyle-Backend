@@ -14,7 +14,7 @@ export class RoleService {
 
   async createRole(dto) {
     checkDto(dto);
-    const candidate = await this.getRoleByName(dto);
+    const candidate = await this.getRoleByName(dto.name);
     checkIsUnique(candidate.data, 'Role');
     const role = await this.roleModel.create({ ...dto });
     return new Created();
@@ -25,9 +25,9 @@ export class RoleService {
     return new Success({ data: roles });
   }
 
-  async getRoleByName(dto) {
-    checkDto(dto);
-    const role = await this.roleModel.findOne({ name: dto.name }).lean();
+  async getRoleByName(name) {
+    checkIsExist(name);
+    const role = await this.roleModel.findOne({ name: name }).lean();
     return new Success({ data: role });
   }
 
