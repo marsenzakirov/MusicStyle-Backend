@@ -11,10 +11,9 @@ export class NotFoundException extends HttpException {
   constructor(error: Error = null) {
     super(
       {
-        message: 'Not Found',
-        error: "The resource you're looking for doesn't exist",
+        error: error.error || 'Not Found',
+        message: error.message || 'The requested resource was not found',
         createdAt: new Date(),
-        ...error,
       },
       HttpStatus.NOT_FOUND,
     );
@@ -25,10 +24,9 @@ export class BadRequestException extends HttpException {
   constructor(error: Error = null) {
     super(
       {
-        message: 'Bad Request',
-        error: 'The request is invalid',
+        error: error.error || 'Bad Request',
+        message: error.message || 'The request is invalid',
         createdAt: new Date(),
-        ...error,
       },
       HttpStatus.BAD_REQUEST,
     );
@@ -47,10 +45,9 @@ export class UnauthorizedException extends HttpException {
   constructor(error: Error = null) {
     super(
       {
-        message: 'Unauthorized',
-        error: 'The request is unauthorized',
+        error: error.error || 'Unauthorized',
+        message: error.message || 'The request is unauthorized',
         createdAt: new Date(),
-        ...error,
       },
       HttpStatus.UNAUTHORIZED,
     );
@@ -61,10 +58,10 @@ export class ForbiddenException extends HttpException {
   constructor(error: Error = null) {
     super(
       {
-        message: 'Forbidden',
-        error: 'The request is forbidden',
+        error: error.error || 'Forbidden',
+        message: error.message || 'The request is forbidden',
+
         createdAt: new Date(),
-        ...error,
       },
       HttpStatus.FORBIDDEN,
     );
@@ -75,8 +72,8 @@ export class MethodNotAllowed extends HttpException {
   constructor(error: Error = null) {
     super(
       {
-        message: 'Method Not Allowed',
-        error: 'The method is not allowed',
+        message: error.message || 'The method is not allowed',
+        error: error.message || 'Method Not Allowed',
         createdAt: new Date(),
         ...error,
       },
