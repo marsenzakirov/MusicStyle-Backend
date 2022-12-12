@@ -1,5 +1,5 @@
 import { checkIsUnique } from './../../api/utils';
-import { checkDto, checkIsExist } from 'api/utils';
+import { checkIsExist } from 'api/utils';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -13,7 +13,6 @@ export class RoleService {
   ) {}
 
   async createRole(dto) {
-    checkDto(dto);
     const candidate = await this.getRoleByName(dto.name);
     checkIsUnique(candidate.data, 'Role');
     const role = await this.roleModel.create({ ...dto });
@@ -32,7 +31,6 @@ export class RoleService {
   }
 
   async deleteRoleByName(dto) {
-    checkDto(dto);
     const role = await this.roleModel
       .findOneAndDelete({ name: dto.name })
       .lean();

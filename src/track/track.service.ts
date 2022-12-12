@@ -3,7 +3,7 @@ import { ChangeCommentDto } from './dto/change-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { NotFoundException, BadRequestException } from 'api/exceptions';
 import { Success, Created } from 'api/responses';
-import { checkDto, checkIsExist } from 'api/utils';
+import { checkIsExist } from 'api/utils';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { Track, TrackDocument } from './track.schema';
 import { Injectable } from '@nestjs/common';
@@ -20,9 +20,6 @@ export class TrackService {
   ) {}
 
   async create(dto: CreateTrackDto, picture, audio) {
-    checkIsExist(picture);
-    checkIsExist(audio);
-    checkDto(dto);
     const picturePath = this.fileService.createFile(FileType.IMAGE, picture);
     const audioPath = await this.fileService.createFile(FileType.AUDIO, audio);
     const track = await this.trackModel.create({
@@ -62,7 +59,6 @@ export class TrackService {
   }
 
   async addComment(dto: CreateCommentDto) {
-    checkDto(dto);
     const comment = {
       _id: new mongoose.Types.ObjectId(),
       username: dto.username,
@@ -75,7 +71,6 @@ export class TrackService {
   }
 
   async deleteComment(id, dto: DeleteCommentDto) {
-    checkDto(dto);
     const track = await this.trackModel.findOne({ _id: dto.trackId });
     track.comments = track.comments.filter((comment) => comment._id != id);
     await track.save();
@@ -83,8 +78,6 @@ export class TrackService {
   }
 
   async changeComment(id, dto: ChangeCommentDto) {
-    checkDto(dto);
-
     const track = await this.trackModel.findOne({ _id: dto.trackId });
 
     checkIsExist(track);

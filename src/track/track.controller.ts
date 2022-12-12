@@ -8,12 +8,15 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   Header,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Query,
+  UploadedFile,
   UploadedFiles,
   UseFilters,
   UseInterceptors,
@@ -30,6 +33,7 @@ import {
 import { Comment } from './comment/comment.schema';
 import { AllExceptionsFilter } from 'exception-filter/exception.filter';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { BadRequestException } from 'api/exceptions';
 
 @ApiTags('Track')
 @Controller('/tracks')
@@ -46,13 +50,20 @@ export class TrackController {
       { name: 'audio', maxCount: 1 },
     ]),
   )
-  @Header('content-type', 'Multipart/form-data')
   create(
-    @UploadedFiles() files,
+    @UploadedFiles()
+    files: { picture: Express.Multer.File[]; audio: Express.Multer.File[] },
     @Body()
     dto: CreateTrackDto,
   ) {
     const { picture, audio } = files;
+    if (picture[0].mimetype.split('/')[0] !== 'image') {
+      throw new BadRequestException({ message: 'Image is not valid' });
+    }
+    if (audio[0].mimetype.split('/')[0] !== 'audio') {
+      throw new BadRequestException({ message: 'Audio is not valid' });
+    }
+    console.log(picture, audio);
     return this.trackService.create(dto, picture[0], audio[0]);
   }
 

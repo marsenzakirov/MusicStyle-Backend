@@ -3,6 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 interface Error {
   error?: string;
   message?: string;
+  data?: any;
   createdAt?: Date;
 }
 
@@ -31,6 +32,14 @@ export class BadRequestException extends HttpException {
       },
       HttpStatus.BAD_REQUEST,
     );
+  }
+}
+
+export class ValidateException extends BadRequestException {
+  data: any;
+  constructor(error: Error = null) {
+    super(error);
+    this.data = error.data;
   }
 }
 

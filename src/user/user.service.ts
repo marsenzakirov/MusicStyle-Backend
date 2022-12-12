@@ -1,5 +1,4 @@
 import { RoleService } from './role/role.service';
-import { checkDto } from 'api/utils';
 import { Created, Success } from 'api/responses';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,7 +14,6 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    checkDto(dto);
     const role = await this.roleService.getRoleByName('user');
     console.log(role);
     const user = await this.userModel.create({ ...dto, role: role.data });
