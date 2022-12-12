@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
   async login(dto) {
     const user = await this.validateUser(dto);
-    return this.generateToken(user);
+    return this.generateTokens(user);
   }
 
   async registration(dto) {
@@ -25,13 +25,17 @@ export class AuthService {
       ...dto,
       password: hashPassword,
     });
-    return this.generateToken(user);
+    return this.generateTokens(user);
   }
 
-  private async generateToken(user) {
+  private async generateTokens(user) {
     const payload = { email: user.email, id: user._id, role: user.role };
     return {
-      token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign({ ...payload, type: 'access' }),
+      refreshToken: this.jwtService.sign(
+        { ...payload, type: 'refresh' },
+        { expiresIn: '90d' },
+      ),
     };
   }
 
@@ -48,5 +52,22 @@ export class AuthService {
     return new UnauthorizedException({
       message: 'incorrect email or password ',
     });
+  }
+
+  async refresh(dto) {
+    try {
+      const decodeJWT = await this.jwtService.verify(dto.refreshToken);
+      const user = await this.userService.getUserById(decodeJWT.id);
+      if (!user || decodeJWT.type !== 'refresh') {
+        return new UnauthorizedException({
+          message: 'Access denied ',
+        });
+      }
+      return this.generateTokens(user.data);
+    } catch (error) {
+      return new UnauthorizedException({
+        message: 'Access denied ',
+      });
+    }
   }
 }

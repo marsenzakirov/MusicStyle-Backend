@@ -37,4 +37,10 @@ export class UserService {
     const user = await this.userModel.findOne({ email }).lean();
     return new Success({ data: user });
   }
+
+  async getUserById(id: string) {
+    console.log(id);
+    const user = await this.userModel.findById(id).lean();
+    return new Success({ data: user });
+  }
 }
