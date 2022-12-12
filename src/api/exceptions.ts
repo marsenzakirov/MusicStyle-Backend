@@ -21,23 +21,17 @@ export class NotFoundException extends HttpException {
 }
 
 export class BadRequestException extends HttpException {
+  data: any;
   constructor(error: Error = null) {
     super(
       {
         error: error.error || 'Bad Request',
         message: error.message || 'The request is invalid',
+        data: error.data,
         createdAt: new Date(),
       },
       HttpStatus.BAD_REQUEST,
     );
-  }
-}
-
-export class ValidateException extends BadRequestException {
-  data: any;
-  constructor(error: Error = null) {
-    super(error);
-    this.data = error.data;
   }
 }
 
